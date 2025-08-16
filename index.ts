@@ -1,6 +1,7 @@
 import dotenv from "dotenv";
 import { discordChannelID } from "./src/config.js";
 import { Client, GatewayIntentBits, TextChannel } from "discord.js";
+import sendUpdatedImage from "./src/sendUpdatedImage.js";
 
 dotenv.config();
 
@@ -13,7 +14,7 @@ client.once("ready", async () => {
   const channel = await client.channels.fetch(discordChannelID);
 
   if (channel && channel.isTextBased()) {
-    (channel as TextChannel).send("Hello from the LBF Stats!");
+    sendUpdatedImage(channel as TextChannel);
   } else {
     console.error("Channel not found or is not a text channel.");
   }

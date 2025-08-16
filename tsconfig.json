@@ -41,6 +41,6 @@
     "moduleDetection": "force",
     "skipLibCheck": true,
   },
-  "include": ["src", "index.ts"],
+  "include": ["src", "assets", "index.ts"],
   "exclude": ["node_modules", ]
 }

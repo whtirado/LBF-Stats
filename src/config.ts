@@ -1,6 +1,10 @@
 // Database
-export const playerSteamIDsPath = ""
+export const steamJSONPath =
+  "C:\\bots\\LBF-Link\\build\\src\\databases\\steam.json";
+
+// Save files
+export const saveFilesPath = "C:\\theisleserver\\TheIsle\\Saved\\PlayerData";
 
 // Discord
-export const discordGuildID = "609577058661695489"
-export const discordChannelID = "1401515759397638164"
+export const discordGuildID = "609577058661695489";
+export const discordChannelID = "1401515759397638164";
