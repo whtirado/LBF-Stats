@@ -14,6 +14,7 @@ async function sendUpdatedImage(channel: TextChannel) {
     .setDescription("Click on map to enlarge.")
     .setColor(0x0099ff)
     .setTimestamp()
+    .setFooter({ text: "Updated every 3 minutes" })
     .setImage("attachment://output.png");
 
   await channel.send({ embeds: [embed], files: [imageAttachment] });

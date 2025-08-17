@@ -1,6 +1,24 @@
 import { join } from "path";
-import { mkdirSync, readdirSync, copyFileSync, statSync } from "fs";
+import { mkdirSync, readdirSync, copyFileSync, statSync, unlinkSync } from "fs";
 import { saveFilesPath, saveEditorSavesPath } from "./config.js";
+
+function deleteSaveFiles() {
+  try {
+    const existing = readdirSync(saveEditorSavesPath);
+
+    for (const f of existing) {
+      const p = join(saveEditorSavesPath, f);
+
+      try {
+        unlinkSync(p);
+      } catch (e) {
+        console.error(`Failed to remove ${p}:`, e);
+      }
+    }
+  } catch (e) {
+    console.error(`Could not read destination dir ${saveEditorSavesPath}:`, e);
+  }
+}
 
 function getPlayerSaves(minutesSinceLastSave?: number) {
   try {
@@ -14,6 +32,8 @@ function getPlayerSaves(minutesSinceLastSave?: number) {
     let copied = 0;
 
     const now = Date.now();
+
+    deleteSaveFiles();
 
     for (const file of files) {
       if (
@@ -42,10 +62,6 @@ function getPlayerSaves(minutesSinceLastSave?: number) {
         }
       }
     }
-
-    console.log(
-      `Copied ${copied} .sav files from ${saveFilesPath} to ${saveEditorSavesPath}`
-    );
   } catch (err) {
     console.error("Error copying player saves:", err);
   }

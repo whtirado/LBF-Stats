@@ -39,8 +39,6 @@ async function plotPlayerPoints(activePlayers: Array<Record<string, any>>) {
   await image
     .composite([{ input: Buffer.from(svgOverlay), top: 0, left: 0 }])
     .toFile(outputPath);
-
-  console.log("output.png created!");
 }
 
 export default plotPlayerPoints;

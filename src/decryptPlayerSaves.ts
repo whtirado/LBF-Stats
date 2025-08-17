@@ -33,11 +33,8 @@ function decryptPlayerSaves() {
         }
       }
     }
-
-    console.log(`Decrypted ${decrypted} .sav files in ${saveEditorSavesPath}`);
   } catch (err) {
     console.error("Error decrypting player saves:", err);
-    throw err;
   }
 }
 

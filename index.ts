@@ -1,14 +1,16 @@
 import dotenv from "dotenv";
+import cron from "node-cron";
 import {
   discordActiveMembersChannelID,
   discordMapChannelID,
 } from "./src/config.js";
-import { Client, GatewayIntentBits, TextChannel } from "discord.js";
-import sendUpdatedImage from "./src/sendUpdatedImage.js";
 import getPlayerSaves from "./src/getPlayerSaves.js";
-import decryptPlayerSaves from "./src/decryptPlayerSaves.js";
+import sendUpdatedImage from "./src/sendUpdatedImage.js";
 import plotPlayerPoints from "./src/plotPlayerPoints.js";
 import getActivePlayers from "./src/getActivePlayers.js";
+import decryptPlayerSaves from "./src/decryptPlayerSaves.js";
+import sendNoActiveMembers from "./src/sendNoActiveMembers.js";
+import { Client, GatewayIntentBits, TextChannel } from "discord.js";
 import sendUpdatedActiveMembers from "./src/sendUpdatedActiveMembers.js";
 
 dotenv.config();
@@ -36,28 +38,48 @@ client.once("ready", async () => {
     discordActiveMembersChannelID
   )) as TextChannel;
 
-  if (mapChannel && channelActiveMembers) {
-    await deleteChannelMessages(mapChannel);
-    await sendUpdatedImage(mapChannel);
-
-    const minutesSinceLastSave = 5;
-
-    getPlayerSaves();
-    // getPlayerSaves(minutesSinceLastSave);
-    decryptPlayerSaves();
-
-    const activeMembers = getActivePlayers();
-
-    await plotPlayerPoints(activeMembers);
-
-    await deleteChannelMessages(channelActiveMembers);
-
-    for (const member of activeMembers) {
-      await sendUpdatedActiveMembers(channelActiveMembers, member);
-    }
-  } else {
+  if (!mapChannel || !channelActiveMembers) {
     console.error("Channel not found or is not a text channel.");
+    return;
   }
+
+  const minutesSinceLastSave = 3;
+
+  // The task to run (extracted so it can be scheduled)
+  async function runTask() {
+    try {
+      getPlayerSaves(minutesSinceLastSave);
+      decryptPlayerSaves();
+
+      const activeMembers = getActivePlayers();
+
+      await plotPlayerPoints(activeMembers);
+      await deleteChannelMessages(mapChannel);
+      await sendUpdatedImage(mapChannel);
+
+      await deleteChannelMessages(channelActiveMembers);
+
+      for (const member of activeMembers) {
+        await sendUpdatedActiveMembers(channelActiveMembers, member);
+      }
+
+      if (activeMembers.length === 0) {
+        sendNoActiveMembers(channelActiveMembers);
+      }
+
+      console.log("Run completed:", new Date().toISOString());
+    } catch (err) {
+      console.error("Error during scheduled run:", err);
+    }
+  }
+
+  // Run once immediately
+  await runTask();
+
+  // Schedule to run every 3 minutes: cron expression '*/3 * * * *'
+  cron.schedule("*/3 * * * *", async () => {
+    await runTask();
+  });
 });
 
 client.login(process.env.DISCORD_TOKEN);

@@ -53,8 +53,6 @@ function getActivePlayers() {
   const unknownMembers = activeMembers.filter((m) => m.member === "Unknown");
   const sortedActiveMembers = knownMembers.concat(unknownMembers);
 
-  console.log("activeMembers", sortedActiveMembers);
-
   return sortedActiveMembers;
 }
 

@@ -23,8 +23,6 @@ function getPlayerCoordinates() {
     });
   }
 
-  console.log("coordinates", playerCoordinates);
-
   return playerCoordinates;
 }
 
