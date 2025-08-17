@@ -1,0 +1,61 @@
+import { join } from "path";
+import { readdirSync } from "fs";
+import readPlayerSaveJSON from "./readPlayerSaveJSON.js";
+import { dinoTypes, saveEditorSavesPath } from "./config.js";
+import readSteamJSON, { type SteamData } from "./readSteamJSON.js";
+
+export function processDinoPointColor(dinoType: string): string {
+  const dinoColors: Record<string, string> = {
+    herbivore: "green",
+    carnivore: "red",
+    omnivore: "yellow",
+  };
+
+  return dinoColors[dinoType] || "unknown";
+}
+
+function getActivePlayers() {
+  const files = readdirSync(saveEditorSavesPath).filter((file) =>
+    file.endsWith(".json")
+  );
+
+  const activeMembers: Record<string, any>[] = [];
+
+  const discordMembers: SteamData = readSteamJSON();
+
+  for (const file of files) {
+    const playerData = readPlayerSaveJSON(join(saveEditorSavesPath, file));
+
+    if (playerData && playerData.Class) {
+      const dino = playerData.Class.split("/")[6];
+      const dinoType = dinoTypes[dino] || "unknown";
+      const steamID = playerData.SteamId;
+
+      const discordMember = discordMembers.accounts.find(
+        (member) => member.linkedID === steamID
+      );
+
+      activeMembers.push({
+        steamID,
+        dino,
+        type: dinoType,
+        color: processDinoPointColor(dinoType),
+        member: discordMember?.name || "Unknown",
+        memberID: discordMember?.memberID || "Unknown",
+        x: Math.round(playerData.X),
+        y: Math.round(playerData.Y),
+      });
+    }
+  }
+
+  // Place members with unknown Discord mapping at the end of the list
+  const knownMembers = activeMembers.filter((m) => m.member !== "Unknown");
+  const unknownMembers = activeMembers.filter((m) => m.member === "Unknown");
+  const sortedActiveMembers = knownMembers.concat(unknownMembers);
+
+  console.log("activeMembers", sortedActiveMembers);
+
+  return sortedActiveMembers;
+}
+
+export default getActivePlayers;
