@@ -8,8 +8,12 @@ const backgroundColor = "white";
 async function generatePopulationChartBuffer(
   populationPercentages: Record<string, number>
 ): Promise<Buffer> {
-  const labels = Object.keys(populationPercentages);
-  const data = labels.map((l) => Number(populationPercentages[l] ?? 0));
+  // Sort entries by value descending so larger populations display first
+  const entries = Object.entries(populationPercentages ?? {});
+  entries.sort((a, b) => Number(b[1] ?? 0) - Number(a[1] ?? 0));
+
+  const labels = entries.map(([k]) => k);
+  const data = entries.map(([, v]) => Number(v ?? 0));
 
   const chartJSNodeCanvas = new ChartJSNodeCanvas({
     width,

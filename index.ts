@@ -83,14 +83,14 @@ client.once("ready", async () => {
         sendNoActiveMembers(channelActiveMembers);
       }
 
-      deleteChannelMessages(channelDinoPopulation);
+      await deleteChannelMessages(channelDinoPopulation);
 
       const populationPercentages = calculateDinoPercentages(dinoPopulation);
+
       const chartBuffer: Buffer<ArrayBufferLike> =
         await generatePopulationChartBuffer(populationPercentages);
 
-      // sendUpdatedDinoPopulation(channelDinoPopulation, populationPercentages);
-      sendUpdatedDinoPopulation(channelDinoPopulation, chartBuffer);
+      await sendUpdatedDinoPopulation(channelDinoPopulation, chartBuffer);
 
       console.log("Run completed:", new Date().toISOString());
     } catch (err) {
