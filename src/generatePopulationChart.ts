@@ -34,7 +34,40 @@ async function generatePopulationChartBuffer(
     },
     options: {
       plugins: {
-        legend: { position: "right", labels: { boxWidth: 16 } },
+        legend: {
+          position: "right",
+          labels: {
+            boxWidth: 16,
+            // generateLabels is the supported hook to customize legend items.
+            // Use `any` casts to avoid strict Chart.js typing differences across versions.
+            generateLabels: (chart: any) => {
+              try {
+                const data = chart.data.datasets?.[0]?.data ?? [];
+                const bg = chart.data.datasets?.[0]?.backgroundColor ?? [];
+
+                return (chart.data.labels ?? []).map(
+                  (label: any, i: number) => {
+                    const value = Number(data[i] ?? 0) || 0;
+                    const display = Number.isInteger(value)
+                      ? String(value)
+                      : value.toFixed(1);
+
+                    return {
+                      text: `${display}% — ${String(label)}`,
+                      fillStyle: Array.isArray(bg) ? bg[i] : bg,
+                      hidden: !!(chart.getDataVisibility
+                        ? !chart.getDataVisibility(i)
+                        : false),
+                      index: i,
+                    } as any;
+                  }
+                );
+              } catch (e) {
+                return [] as any;
+              }
+            },
+          } as any,
+        },
         title: {
           display: true,
           text: "Dino population (%)",
