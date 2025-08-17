@@ -14,15 +14,7 @@ async function sendUpdatedActiveMembers(
   delete memberCopy.x;
   delete memberCopy.y;
   delete memberCopy.member;
-
-  const color = memberCopy.color?.toLowerCase?.();
   delete memberCopy.color;
-
-  const colorMap: Record<string, number> = {
-    yellow: 0xffff00,
-    red: 0xff0000,
-    green: 0x00ff00,
-  };
 
   const embed = new EmbedBuilder();
 

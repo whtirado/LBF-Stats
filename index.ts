@@ -2,6 +2,7 @@ import dotenv from "dotenv";
 import cron from "node-cron";
 import {
   discordActiveMembersChannelID,
+  discordDinoPopulationChannelID,
   discordMapChannelID,
 } from "./src/config.js";
 import getPlayerSaves from "./src/getPlayerSaves.js";
@@ -12,6 +13,9 @@ import decryptPlayerSaves from "./src/decryptPlayerSaves.js";
 import sendNoActiveMembers from "./src/sendNoActiveMembers.js";
 import { Client, GatewayIntentBits, TextChannel } from "discord.js";
 import sendUpdatedActiveMembers from "./src/sendUpdatedActiveMembers.js";
+import calculateDinoPercentages from "./src/calculateDinoPopulation.js";
+import sendUpdatedDinoPopulation from "./src/sendUpdatedDinoPopulation.js";
+import generatePopulationChartBuffer from "./src/generatePopulationChart.js";
 
 dotenv.config();
 
@@ -38,7 +42,11 @@ client.once("ready", async () => {
     discordActiveMembersChannelID
   )) as TextChannel;
 
-  if (!mapChannel || !channelActiveMembers) {
+  const channelDinoPopulation = (await client.channels.fetch(
+    discordDinoPopulationChannelID
+  )) as TextChannel;
+
+  if (!mapChannel || !channelActiveMembers || !channelDinoPopulation) {
     console.error("Channel not found or is not a text channel.");
     return;
   }
@@ -59,13 +67,30 @@ client.once("ready", async () => {
 
       await deleteChannelMessages(channelActiveMembers);
 
+      const dinoPopulation: Record<string, any> = {};
+
       for (const member of activeMembers) {
         await sendUpdatedActiveMembers(channelActiveMembers, member);
+
+        if (!(member.dino in dinoPopulation)) {
+          dinoPopulation[member.dino] = 0;
+        }
+
+        dinoPopulation[member.dino] += 1;
       }
 
       if (activeMembers.length === 0) {
         sendNoActiveMembers(channelActiveMembers);
       }
+
+      deleteChannelMessages(channelDinoPopulation);
+
+      const populationPercentages = calculateDinoPercentages(dinoPopulation);
+      const chartBuffer: Buffer<ArrayBufferLike> =
+        await generatePopulationChartBuffer(populationPercentages);
+
+      // sendUpdatedDinoPopulation(channelDinoPopulation, populationPercentages);
+      sendUpdatedDinoPopulation(channelDinoPopulation, chartBuffer);
 
       console.log("Run completed:", new Date().toISOString());
     } catch (err) {

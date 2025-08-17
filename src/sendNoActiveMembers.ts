@@ -1,10 +1,5 @@
-import { fileURLToPath } from "url";
 import type { TextChannel } from "discord.js";
-import { EmbedBuilder, AttachmentBuilder } from "discord.js";
-
-const outputPath = fileURLToPath(
-  new URL("../assets/output.png", import.meta.url)
-);
+import { EmbedBuilder } from "discord.js";
 
 async function sendNoActiveMembers(channel: TextChannel) {
   const embed = new EmbedBuilder()

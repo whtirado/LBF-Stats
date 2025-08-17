@@ -9,6 +9,7 @@ export const saveFilesPath = "C:\\theisleserver\\TheIsle\\Saved\\PlayerData";
 export const discordGuildID = "1084674025961291786";
 export const discordMapChannelID = "1406611762790404220";
 export const discordActiveMembersChannelID = "1406612006571606027";
+export const discordDinoPopulationChannelID = "1406682346002055198";
 
 // Save editor
 export const saveEditorExePath = "C:\\TheIsleSaveEditor\\islesave.exe";
