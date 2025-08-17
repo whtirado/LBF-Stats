@@ -34,6 +34,7 @@ async function sendUpdatedActiveMembers(
   const userId = memberCopy.memberID?.toString?.();
 
   let isSus = false;
+  const isAdmin = isAdminSteamID(memberCopy.steamID);
 
   if (userId) {
     try {
@@ -59,6 +60,14 @@ async function sendUpdatedActiveMembers(
         .setThumbnail("attachment://sus.png")
         .setColor(0xff0000);
     }
+  }
+
+  if (isAdmin) {
+    memberCopy.admin = true;
+  }
+
+  if (isSus) {
+    memberCopy.SUS = true;
   }
 
   const description = Object.entries(memberCopy).map(
