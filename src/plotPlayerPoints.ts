@@ -27,12 +27,11 @@ async function plotPlayerPoints(activePlayers: Array<Record<string, any>>) {
       const cx = halfWidth + x * scaleX;
       const cy = halfHeight + y * scaleY;
 
+      const isAdmin = isAdminSteamID(steamID);
+      const isSUS = member === "Unknown";
+
       return `<circle cx="${cx}" cy="${cy}" r="8" fill="${
-        member === "Unknown"
-          ? "purple"
-          : isAdminSteamID(steamID)
-          ? "yellow"
-          : "red"
+        isSUS ? "red" : isAdmin ? "yellow" : "green"
       }" stroke="black" stroke-width="2" />`;
     })
     .join("\n");

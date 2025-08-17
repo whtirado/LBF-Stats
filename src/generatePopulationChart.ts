@@ -35,7 +35,7 @@ async function generatePopulationChartBuffer(
     options: {
       plugins: {
         legend: {
-          position: "right",
+          position: "left",
           labels: {
             boxWidth: 16,
             // generateLabels is the supported hook to customize legend items.

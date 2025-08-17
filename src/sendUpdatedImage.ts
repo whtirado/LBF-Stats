@@ -12,7 +12,7 @@ async function sendUpdatedImage(channel: TextChannel) {
   const embed = new EmbedBuilder()
     .setTitle("LBF Map Update")
     .setDescription(
-      "Click on map to enlarge.\n\nYellow:\nAdmin\n\nRed:\nVerified on Discord\n\nPurple:\nNot in our Discord (SUS)"
+      "Click on map to enlarge.\n\nYellow:\nAdmin\n\nGreen:\nVerified on Discord\n\nRed:\nNot in our Discord (SUS)"
     )
     .setColor(0x0099ff)
     .setTimestamp()
@@ -21,8 +21,7 @@ async function sendUpdatedImage(channel: TextChannel) {
     })
     .setImage("attachment://output.png");
 
-  await channel.send({ embeds: [embed] });
-  await channel.send({ files: [imageAttachment] });
+  await channel.send({ embeds: [embed], files: [imageAttachment] });
 }
 
 export default sendUpdatedImage;
