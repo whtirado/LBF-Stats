@@ -11,7 +11,9 @@ async function sendUpdatedImage(channel: TextChannel) {
 
   const embed = new EmbedBuilder()
     .setTitle("LBF Map Update")
-    .setDescription("Click on map to enlarge.")
+    .setDescription(
+      "Click on map to enlarge.\n\nRed: Players is validated on Discord\n\nPurple: Player is not in our Discord"
+    )
     .setColor(0x0099ff)
     .setTimestamp()
     .setFooter({ text: "Updated every 3 minutes" })

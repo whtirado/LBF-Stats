@@ -21,11 +21,13 @@ async function plotPlayerPoints(activePlayers: Array<Record<string, any>>) {
   const scaleY = halfHeight / maxGameDistance;
 
   const svgCircles = activePlayers
-    .map(({ x, y, color }) => {
+    .map(({ x, y, color, member }) => {
       const cx = halfWidth + x * scaleX;
       const cy = halfHeight + y * scaleY;
 
-      return `<circle cx="${cx}" cy="${cy}" r="7" fill="red" />`;
+      return `<circle cx="${cx}" cy="${cy}" r="7" fill="${
+        member === "Unknown" ? "purple" : "red"
+      }" stroke="black" stroke-width="2" />`;
     })
     .join("\n");
 
