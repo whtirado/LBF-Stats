@@ -12,7 +12,7 @@ async function sendUpdatedImage(channel: TextChannel) {
   const embed = new EmbedBuilder()
     .setTitle("LBF Map Update")
     .setDescription(
-      "Click on map to enlarge.\n\nRed: Players is validated on Discord\n\nPurple: Player is not in our Discord"
+      "Click on map to enlarge.\n\nRed:\nPlayers is validated on Discord\n\nPurple:\nPlayer is not in our Discord"
     )
     .setColor(0x0099ff)
     .setTimestamp()

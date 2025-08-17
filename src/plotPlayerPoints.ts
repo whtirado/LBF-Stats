@@ -25,7 +25,7 @@ async function plotPlayerPoints(activePlayers: Array<Record<string, any>>) {
       const cx = halfWidth + x * scaleX;
       const cy = halfHeight + y * scaleY;
 
-      return `<circle cx="${cx}" cy="${cy}" r="7" fill="${
+      return `<circle cx="${cx}" cy="${cy}" r="8" fill="${
         member === "Unknown" ? "purple" : "red"
       }" stroke="black" stroke-width="2" />`;
     })

@@ -43,7 +43,7 @@ client.once("ready", async () => {
     return;
   }
 
-  const minutesSinceLastSave = 3;
+  const minutesSinceLastSave = 10;
 
   // The task to run (extracted so it can be scheduled)
   async function runTask() {
