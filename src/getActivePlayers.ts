@@ -3,6 +3,7 @@ import { readdirSync } from "fs";
 import readPlayerSaveJSON from "./readPlayerSaveJSON.js";
 import { dinoTypes, saveEditorSavesPath } from "./config.js";
 import readSteamJSON, { type SteamData } from "./readSteamJSON.js";
+import isAdminSteamID from "./isAdminSteamID.js";
 
 export function processDinoPointColor(dinoType: string): string {
   const dinoColors: Record<string, string> = {
@@ -49,9 +50,18 @@ function getActivePlayers() {
   }
 
   // Place members with unknown Discord mapping at the end of the list
-  const knownMembers = activeMembers.filter((m) => m.member !== "Unknown");
+
+  const knownMembers = activeMembers.filter(
+    (m) => m.member !== "Unknown" && !isAdminSteamID(m.steamID)
+  );
+  const adminMembers = activeMembers.filter((m) => isAdminSteamID(m.steamID));
   const unknownMembers = activeMembers.filter((m) => m.member === "Unknown");
-  const sortedActiveMembers = knownMembers.concat(unknownMembers);
+
+  const sortedActiveMembers = [
+    ...adminMembers,
+    ...knownMembers,
+    ...unknownMembers,
+  ];
 
   return sortedActiveMembers;
 }

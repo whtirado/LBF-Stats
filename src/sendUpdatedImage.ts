@@ -12,11 +12,13 @@ async function sendUpdatedImage(channel: TextChannel) {
   const embed = new EmbedBuilder()
     .setTitle("LBF Map Update")
     .setDescription(
-      "Click on map to enlarge.\n\nRed:\nPlayers is validated on Discord\n\nPurple:\nPlayer is not in our Discord"
+      "Click on map to enlarge.\n\nYellow:\nAdmin\n\nRed:\nVerified on Discord\n\nPurple:\nNot in our Discord"
     )
     .setColor(0x0099ff)
     .setTimestamp()
-    .setFooter({ text: "Updated every 3 minutes" })
+    .setFooter({
+      text: "Updated every 3 minutes. May be outdated by up to 10 minutes.",
+    })
     .setImage("attachment://output.png");
 
   await channel.send({ embeds: [embed], files: [imageAttachment] });

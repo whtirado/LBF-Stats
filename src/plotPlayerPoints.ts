@@ -1,5 +1,6 @@
 import sharp from "sharp";
 import { fileURLToPath } from "url";
+import isAdminSteamID from "./isAdminSteamID.js";
 
 const inputPath = fileURLToPath(
   new URL("../assets/image.png", import.meta.url)
@@ -21,12 +22,17 @@ async function plotPlayerPoints(activePlayers: Array<Record<string, any>>) {
   const scaleY = halfHeight / maxGameDistance;
 
   const svgCircles = activePlayers
-    .map(({ x, y, color, member }) => {
+    .toReversed()
+    .map(({ x, y, member, steamID }) => {
       const cx = halfWidth + x * scaleX;
       const cy = halfHeight + y * scaleY;
 
       return `<circle cx="${cx}" cy="${cy}" r="8" fill="${
-        member === "Unknown" ? "purple" : "red"
+        member === "Unknown"
+          ? "purple"
+          : isAdminSteamID(steamID)
+          ? "yellow"
+          : "red"
       }" stroke="black" stroke-width="2" />`;
     })
     .join("\n");

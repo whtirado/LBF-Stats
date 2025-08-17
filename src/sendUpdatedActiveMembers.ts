@@ -1,5 +1,6 @@
 import { fileURLToPath } from "url";
 import type { TextChannel } from "discord.js";
+import isAdminSteamID from "./isAdminSteamID.js";
 import { EmbedBuilder, AttachmentBuilder } from "discord.js";
 
 const susImage = fileURLToPath(new URL("../assets/sus.png", import.meta.url));
@@ -22,8 +23,6 @@ async function sendUpdatedActiveMembers(
     red: 0xff0000,
     green: 0x00ff00,
   };
-
-  const embedColor = colorMap[color] || 0x0099ff;
 
   const embed = new EmbedBuilder();
 
@@ -49,13 +48,16 @@ async function sendUpdatedActiveMembers(
           name: user?.globalName || "Unknown",
           iconURL: avatarUrl,
         })
-        .setThumbnail(avatarUrl);
+        .setThumbnail(avatarUrl)
+        .setColor(isAdminSteamID(memberCopy.steamID) ? 0xffff00 : 0x0099ff);
     } catch (err) {
       isSus = true;
       // ignore fetch errors (invalid ID, bot not in mutual guilds, rate limits, etc.)
       // leave author as Unknown; we'll still attach and use the local sus thumbnail
-      embed.setAuthor({ name: "Unknown" });
-      embed.setThumbnail("attachment://sus.png");
+      embed
+        .setAuthor({ name: "Unknown" })
+        .setThumbnail("attachment://sus.png")
+        .setColor(0xff0000);
     }
   }
 
@@ -63,10 +65,9 @@ async function sendUpdatedActiveMembers(
     ([key, value]) => `**${key}:** ${value}`
   );
 
-  embed
-    .setTitle(description.join("\n"))
-    .setColor(embedColor)
-    .setFooter({ text: "Updated every 3 minutes" });
+  embed.setTitle(description.join("\n")).setFooter({
+    text: "Updated every 3 minutes. May be outdated by up to 10 minutes.",
+  });
 
   await channel.send({ embeds: [embed], files: isSus ? [susAttachment] : [] });
 }
