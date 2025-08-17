@@ -45,6 +45,7 @@ async function sendUpdatedActiveMembers(
         .setColor(isAdminSteamID(memberCopy.steamID) ? 0xffff00 : 0x0099ff);
     } catch (err) {
       isSus = true;
+      delete memberCopy.memberID;
       // ignore fetch errors (invalid ID, bot not in mutual guilds, rate limits, etc.)
       // leave author as Unknown; we'll still attach and use the local sus thumbnail
       embed
