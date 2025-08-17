@@ -50,6 +50,11 @@ async function sendUpdatedActiveMembers(
       embed
         .setAuthor({ name: "Unknown" })
         .setThumbnail("attachment://sus.png")
+        .setDescription("This player has not joined our discord")
+        .addFields({
+          name: "Profile Checker:",
+          value: `https://www.steamidfinder.com/lookup/${memberCopy.steamID}/`,
+        })
         .setColor(0xff0000);
     }
   }
