@@ -2,6 +2,7 @@ import { fileURLToPath } from "url";
 import type { TextChannel } from "discord.js";
 import isAdminSteamID from "./isAdminSteamID.js";
 import { EmbedBuilder, AttachmentBuilder } from "discord.js";
+import plotPlayerSUSPoints from "./plotPlayerSUSPoints.js";
 
 const susImage = fileURLToPath(new URL("../assets/sus.png", import.meta.url));
 
@@ -11,8 +12,6 @@ async function sendUpdatedActiveMembers(
 ) {
   // Format member data for description
   const memberCopy = JSON.parse(JSON.stringify(member));
-  delete memberCopy.x;
-  delete memberCopy.y;
   delete memberCopy.member;
   delete memberCopy.color;
 
@@ -26,6 +25,8 @@ async function sendUpdatedActiveMembers(
   const userId = memberCopy.memberID?.toString?.();
 
   let isSus = false;
+  let susAttachmentLocation;
+
   const isAdmin = isAdminSteamID(memberCopy.steamID);
 
   if (userId) {
@@ -44,10 +45,15 @@ async function sendUpdatedActiveMembers(
         .setThumbnail(avatarUrl)
         .setColor(isAdminSteamID(memberCopy.steamID) ? 0xffff00 : 0x0099ff);
     } catch (err) {
+      // SUS PLAYERS
       isSus = true;
       delete memberCopy.memberID;
-      // ignore fetch errors (invalid ID, bot not in mutual guilds, rate limits, etc.)
-      // leave author as Unknown; we'll still attach and use the local sus thumbnail
+
+      susAttachmentLocation = await plotPlayerSUSPoints(
+        memberCopy.x,
+        memberCopy.y
+      );
+
       embed
         .setAuthor({ name: "Unknown" })
         .setThumbnail("attachment://sus.png")
@@ -56,6 +62,7 @@ async function sendUpdatedActiveMembers(
           name: "Profile Checker:",
           value: `https://www.steamidfinder.com/lookup/${memberCopy.steamID}/`,
         })
+        .setImage("attachment://sus_player.png")
         .setColor(0xff0000);
     }
   }
@@ -68,6 +75,9 @@ async function sendUpdatedActiveMembers(
     memberCopy.SUS = true;
   }
 
+  delete memberCopy.x;
+  delete memberCopy.y;
+
   const description = Object.entries(memberCopy).map(
     ([key, value]) => `**${key}:** ${value}`
   );
@@ -76,7 +86,13 @@ async function sendUpdatedActiveMembers(
     text: "Updated every 3 minutes. May be outdated by up to 10 minutes.",
   });
 
-  await channel.send({ embeds: [embed], files: isSus ? [susAttachment] : [] });
+  await channel.send({
+    embeds: [embed],
+    files:
+      isSus && susAttachmentLocation
+        ? [susAttachment, susAttachmentLocation]
+        : [],
+  });
 }
 
 export default sendUpdatedActiveMembers;
