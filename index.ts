@@ -17,6 +17,8 @@ import sendUpdatedActiveMembers from "./src/sendUpdatedActiveMembers.js";
 import calculateDinoPercentages from "./src/calculateDinoPopulation.js";
 import sendUpdatedDinoPopulation from "./src/sendUpdatedDinoPopulation.js";
 import generatePopulationChartBuffer from "./src/generatePopulationChart.js";
+import plotPlayerPointsHighContrast from "./src/plotPlayerPointsHighContrast.js";
+import sendUpdatedImageHighContrast from "./src/sendUpdatedImageHighContrast.js";
 
 dotenv.config();
 
@@ -73,7 +75,9 @@ client.once("ready", async () => {
       const activeMembers = getActivePlayers();
 
       await plotPlayerPoints(activeMembers);
+      await plotPlayerPointsHighContrast(activeMembers);
       await deleteChannelMessages(mapChannel);
+      await sendUpdatedImageHighContrast(mapChannel);
       await sendUpdatedImage(mapChannel);
 
       await deleteChannelMessages(channelActiveMembers);
