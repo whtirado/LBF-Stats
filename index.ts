@@ -1,9 +1,10 @@
 import dotenv from "dotenv";
 import cron from "node-cron";
 import {
+  discordMapChannelID,
   discordActiveMembersChannelID,
   discordDinoPopulationChannelID,
-  discordMapChannelID,
+  discordAdminBunkerLiveMembersChannelID,
 } from "./src/config.js";
 import getPlayerSaves from "./src/getPlayerSaves.js";
 import sendUpdatedImage from "./src/sendUpdatedImage.js";
@@ -19,6 +20,7 @@ import sendUpdatedDinoPopulation from "./src/sendUpdatedDinoPopulation.js";
 import generatePopulationChartBuffer from "./src/generatePopulationChart.js";
 import plotPlayerPointsHighContrast from "./src/plotPlayerPointsHighContrast.js";
 import sendUpdatedImageHighContrast from "./src/sendUpdatedImageHighContrast.js";
+import getActivePlayersForAdmins from "./src/getActivePlayersForAdmins.js";
 
 dotenv.config();
 
@@ -59,7 +61,16 @@ client.once("ready", async () => {
     discordDinoPopulationChannelID
   )) as TextChannel;
 
-  if (!mapChannel || !channelActiveMembers || !channelDinoPopulation) {
+  const channelAdminBunkerLiveMembers = (await client.channels.fetch(
+    discordAdminBunkerLiveMembersChannelID
+  )) as TextChannel;
+
+  if (
+    !mapChannel ||
+    !channelActiveMembers ||
+    !channelDinoPopulation ||
+    !channelAdminBunkerLiveMembers
+  ) {
     console.error("Channel not found or is not a text channel.");
     return;
   }
@@ -106,6 +117,18 @@ client.once("ready", async () => {
         await generatePopulationChartBuffer(populationPercentages);
 
       await sendUpdatedDinoPopulation(channelDinoPopulation, chartBuffer);
+
+      // send active members for admins
+      await deleteChannelMessages(channelAdminBunkerLiveMembers);
+      const activePlayersForAdmins = getActivePlayersForAdmins();
+
+      for (const member of activePlayersForAdmins) {
+        await sendUpdatedActiveMembers(channelAdminBunkerLiveMembers, member);
+      }
+
+      if (activePlayersForAdmins.length === 0) {
+        sendNoActiveMembers(channelAdminBunkerLiveMembers);
+      }
 
       console.log("Run completed:", new Date().toISOString());
     } catch (err) {

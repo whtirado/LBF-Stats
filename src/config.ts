@@ -11,6 +11,7 @@ export const discordMapChannelID = "1406611762790404220";
 export const discordOptOutLiveStats = "1407116264173862923";
 export const discordActiveMembersChannelID = "1406612006571606027";
 export const discordDinoPopulationChannelID = "1406682346002055198";
+export const discordAdminBunkerLiveMembersChannelID = "1407456598191767553";
 
 // Discord Messages
 export const discordOptOutMessageID = "1407418656576770068";
