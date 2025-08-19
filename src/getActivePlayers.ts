@@ -4,6 +4,7 @@ import readPlayerSaveJSON from "./readPlayerSaveJSON.js";
 import { dinoTypes, saveEditorSavesPath } from "./config.js";
 import readSteamJSON, { type SteamData } from "./readSteamJSON.js";
 import isAdminSteamID from "./isAdminSteamID.js";
+import isMemberOptOut from "./optOut/isMemberOptOut.js";
 
 export function processDinoPointColor(dinoType: string): string {
   const dinoColors: Record<string, string> = {
@@ -35,6 +36,10 @@ function getActivePlayers() {
       const discordMember = discordMembers.accounts.find(
         (member) => member.linkedID === steamID
       );
+
+      if (isMemberOptOut(discordMember?.memberID ?? "")) {
+        continue;
+      }
 
       activeMembers.push({
         steamID,

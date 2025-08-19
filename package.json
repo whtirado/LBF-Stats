@@ -8,7 +8,8 @@
     "build": "tsc && cp -r assets dist/assets && cp .env dist/.env",
     "start": "node dist/index.js",
     "dev": "npm run build && node dist/index.js",
-    "dev:watch": "nodemon --watch src --watch index.ts --ext ts --exec \"npm run build && node dist/index.js\""
+    "dev:watch": "nodemon --watch src --watch index.ts --ext ts --exec \"npm run build && node dist/index.js\"",
+    "typecheck": "tsc --noEmit"
   },
   "keywords": [],
   "author": "",

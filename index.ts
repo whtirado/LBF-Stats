@@ -11,7 +11,8 @@ import plotPlayerPoints from "./src/plotPlayerPoints.js";
 import getActivePlayers from "./src/getActivePlayers.js";
 import decryptPlayerSaves from "./src/decryptPlayerSaves.js";
 import sendNoActiveMembers from "./src/sendNoActiveMembers.js";
-import { Client, GatewayIntentBits, TextChannel } from "discord.js";
+import { Client, GatewayIntentBits, Partials, TextChannel } from "discord.js";
+import { handleOptOutReaction } from "./src/optOut/optOutMember.js";
 import sendUpdatedActiveMembers from "./src/sendUpdatedActiveMembers.js";
 import calculateDinoPercentages from "./src/calculateDinoPopulation.js";
 import sendUpdatedDinoPopulation from "./src/sendUpdatedDinoPopulation.js";
@@ -28,7 +29,17 @@ async function deleteChannelMessages(channel: TextChannel) {
 }
 
 const client = new Client({
-  intents: [GatewayIntentBits.Guilds, GatewayIntentBits.GuildMessages],
+  intents: [
+    GatewayIntentBits.Guilds,
+    GatewayIntentBits.GuildMessages,
+    GatewayIntentBits.GuildMessageReactions,
+  ],
+  partials: [
+    Partials.Message,
+    Partials.Channel,
+    Partials.Reaction,
+    Partials.User,
+  ],
 });
 
 client.once("ready", async () => {
@@ -106,5 +117,17 @@ client.once("ready", async () => {
     await runTask();
   });
 });
+
+client.on("messageReactionAdd", async (reaction, user) => {
+  if (user.bot) return;
+
+  await handleOptOutReaction(reaction, user);
+});
+
+// client.on("messageReactionRemove", async (reaction, user) => {
+//   if (user.bot) return;
+
+//   await handleOptOutReactionRemove(reaction, user);
+// });
 
 client.login(process.env.DISCORD_TOKEN);
