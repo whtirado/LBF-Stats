@@ -1,14 +1,10 @@
 import { readFileSync } from "fs";
-import { dirname, resolve } from "path";
-import { fileURLToPath } from "url";
 
 export type OptOutData = {
   liveStats: string[];
 };
 
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = dirname(__filename);
-const optOutJsonPath = resolve(__dirname, "opt-out.json");
+export const optOutJsonPath = "C:\\botData\\opt-out.json";
 
 function readOptOut(): OptOutData {
   try {

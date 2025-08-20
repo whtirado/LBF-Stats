@@ -1,11 +1,5 @@
 import { writeFileSync } from "fs";
-import { resolve, dirname } from "path";
-import { fileURLToPath } from "url";
-import readOptOut, { type OptOutData } from "./readOptOut.js";
-
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = dirname(__filename);
-const optOutJsonPath = resolve(__dirname, "opt-out.json");
+import readOptOut, { optOutJsonPath, type OptOutData } from "./readOptOut.js";
 
 function writeOptOut(entry: string): void {
   try {
