@@ -21,6 +21,7 @@ import generatePopulationChartBuffer from "./src/generatePopulationChart.js";
 import plotPlayerPointsHighContrast from "./src/plotPlayerPointsHighContrast.js";
 import sendUpdatedImageHighContrast from "./src/sendUpdatedImageHighContrast.js";
 import getActivePlayersForAdmins from "./src/getActivePlayersForAdmins.js";
+import { executeNode } from "./src/executeNode.js";
 
 dotenv.config();
 
@@ -75,11 +76,13 @@ client.once("ready", async () => {
     return;
   }
 
-  const minutesSinceLastSave = 10;
+  const minutesSinceLastSave = 3;
 
   // The task to run (extracted so it can be scheduled)
   async function runTask() {
     try {
+      executeNode("C:\\rcon\\commands\\saveServer.cjs");
+
       getPlayerSaves(minutesSinceLastSave);
       decryptPlayerSaves();
 
