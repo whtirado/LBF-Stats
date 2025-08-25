@@ -83,7 +83,7 @@ async function sendUpdatedActiveMembers(
   );
 
   embed.setTitle(description.join("\n")).setFooter({
-    text: "Updated every 3 minutes. May be outdated by up to 10 minutes.",
+    text: "Updated every 3 minutes. May be outdated by up to 3 minutes.",
   });
 
   await channel.send({

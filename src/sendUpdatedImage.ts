@@ -17,7 +17,7 @@ async function sendUpdatedImage(channel: TextChannel) {
     .setColor(0x0099ff)
     .setTimestamp()
     .setFooter({
-      text: "Updated every 3 minutes. May be outdated by up to 10 minutes.",
+      text: "Updated every 3 minutes. May be outdated by up to 3 minutes.",
     })
     .setImage("attachment://output.png");
 
