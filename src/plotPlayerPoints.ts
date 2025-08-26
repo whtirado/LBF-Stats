@@ -113,7 +113,7 @@ async function plotPlayerPoints(activePlayers: Array<Record<string, any>>) {
     // Preserve previous drawing order: draw earlier players later by reversing
     .toReversed()
     .map((pt) => {
-      const fill = pt.isSUS ? "red" : pt.isAdmin ? "yellow" : "green";
+      const fill = pt.isSUS ? "red" : pt.isAdmin ? "yellow" : "#39FF14";
       return `<circle cx="${pt.cx}" cy="${pt.cy}" r="${pt.r}" fill="${fill}" stroke="black" stroke-width="2" />`;
     })
     .join("\n");
