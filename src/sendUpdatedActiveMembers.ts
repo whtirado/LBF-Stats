@@ -3,6 +3,7 @@ import type { TextChannel } from "discord.js";
 import isAdminSteamID from "./isAdminSteamID.js";
 import { EmbedBuilder, AttachmentBuilder } from "discord.js";
 import plotPlayerSUSPoints from "./plotPlayerSUSPoints.js";
+import { stringUnknown } from "./strings.js";
 
 const susImage = fileURLToPath(new URL("../assets/sus.png", import.meta.url));
 
@@ -39,7 +40,7 @@ async function sendUpdatedActiveMembers(
       // Use the local sus image as the thumbnail; keep the user's avatar as the author icon
       embed
         .setAuthor({
-          name: user?.globalName || "Unknown",
+          name: user?.globalName || stringUnknown,
           iconURL: avatarUrl,
         })
         .setThumbnail(avatarUrl)
@@ -55,7 +56,7 @@ async function sendUpdatedActiveMembers(
       );
 
       embed
-        .setAuthor({ name: "Unknown" })
+        .setAuthor({ name: stringUnknown })
         .setThumbnail("attachment://sus.png")
         .setDescription("This player has not joined our discord")
         .addFields({

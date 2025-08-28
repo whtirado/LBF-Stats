@@ -6,22 +6,24 @@ import {
   discordDinoPopulationChannelID,
   discordAdminBunkerLiveMembersChannelID,
 } from "./src/config.js";
+import { executeNode } from "./src/executeNode.js";
 import getPlayerSaves from "./src/getPlayerSaves.js";
 import sendUpdatedImage from "./src/sendUpdatedImage.js";
 import plotPlayerPoints from "./src/plotPlayerPoints.js";
 import getActivePlayers from "./src/getActivePlayers.js";
 import decryptPlayerSaves from "./src/decryptPlayerSaves.js";
 import sendNoActiveMembers from "./src/sendNoActiveMembers.js";
-import { Client, GatewayIntentBits, Partials, TextChannel } from "discord.js";
 import { handleOptOutReaction } from "./src/optOut/optOutMember.js";
 import sendUpdatedActiveMembers from "./src/sendUpdatedActiveMembers.js";
 import calculateDinoPercentages from "./src/calculateDinoPopulation.js";
+import getActivePlayersForAdmins from "./src/getActivePlayersForAdmins.js";
 import sendUpdatedDinoPopulation from "./src/sendUpdatedDinoPopulation.js";
 import generatePopulationChartBuffer from "./src/generatePopulationChart.js";
+import { Client, GatewayIntentBits, Partials, TextChannel } from "discord.js";
 import plotPlayerPointsHighContrast from "./src/plotPlayerPointsHighContrast.js";
 import sendUpdatedImageHighContrast from "./src/sendUpdatedImageHighContrast.js";
-import getActivePlayersForAdmins from "./src/getActivePlayersForAdmins.js";
-import { executeNode } from "./src/executeNode.js";
+import { manageGems } from "./src/manageGems.js";
+import { stringUnknown } from "./src/strings.js";
 
 dotenv.config();
 
@@ -76,7 +78,7 @@ client.once("ready", async () => {
     return;
   }
 
-  const minutesSinceLastSave = 3;
+  const minutesSinceLastSave = 4;
 
   // The task to run (extracted so it can be scheduled)
   async function runTask() {
@@ -100,6 +102,13 @@ client.once("ready", async () => {
 
       for (const member of activeMembers) {
         await sendUpdatedActiveMembers(channelActiveMembers, member);
+
+        if (member.memberID && member.memberID !== stringUnknown) {
+          const gemReward = 2;
+          const reason = "Passive gems";
+
+          manageGems(member.memberID, gemReward, reason);
+        }
 
         if (!(member.dino in dinoPopulation)) {
           dinoPopulation[member.dino] = 0;

@@ -1,6 +1,7 @@
 import sharp from "sharp";
 import { fileURLToPath } from "url";
 import isAdminSteamID from "./isAdminSteamID.js";
+import { stringUnknown } from "./strings.js";
 
 const inputPath = fileURLToPath(
   new URL("../assets/image.png", import.meta.url)
@@ -35,7 +36,7 @@ async function plotPlayerPoints(activePlayers: Array<Record<string, any>>) {
     const cx = halfWidth + x * scaleX;
     const cy = halfHeight + y * scaleY;
     const isAdmin = isAdminSteamID(steamID);
-    const isSUS = member === "Unknown";
+    const isSUS = member === stringUnknown;
     const r = isSUS ? 9 : 7;
     return { idx, cx, cy, isAdmin, isSUS, r };
   });

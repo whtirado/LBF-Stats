@@ -4,6 +4,7 @@ import isAdminSteamID from "./isAdminSteamID.js";
 import readPlayerSaveJSON from "./readPlayerSaveJSON.js";
 import { dinoTypes, saveEditorSavesPath } from "./config.js";
 import readSteamJSON, { type SteamData } from "./readSteamJSON.js";
+import { stringUnknown } from "./strings.js";
 
 export function processDinoPointColor(dinoType: string): string {
   const dinoColors: Record<string, string> = {
@@ -12,7 +13,7 @@ export function processDinoPointColor(dinoType: string): string {
     omnivore: "yellow",
   };
 
-  return dinoColors[dinoType] || "unknown";
+  return dinoColors[dinoType] || stringUnknown;
 }
 
 function getActivePlayersForAdmins() {
@@ -29,7 +30,7 @@ function getActivePlayersForAdmins() {
 
     if (playerData && playerData.Class) {
       const dino = playerData.Class.split("/")[6];
-      const dinoType = dinoTypes[dino] || "unknown";
+      const dinoType = dinoTypes[dino] || stringUnknown;
       const steamID = playerData.SteamId;
 
       const discordMember = discordMembers.accounts.find(
@@ -41,8 +42,8 @@ function getActivePlayersForAdmins() {
         dino,
         type: dinoType,
         color: processDinoPointColor(dinoType),
-        member: discordMember?.name || "Unknown",
-        memberID: discordMember?.memberID || "Unknown",
+        member: discordMember?.name || stringUnknown,
+        memberID: discordMember?.memberID || stringUnknown,
         x: Math.round(playerData.X),
         y: Math.round(playerData.Y),
       });
@@ -50,11 +51,13 @@ function getActivePlayersForAdmins() {
   }
 
   const knownMembers = activeMembers.filter(
-    (m) => m.member !== "Unknown" && !isAdminSteamID(m.steamID)
+    (m) => m.member !== stringUnknown && !isAdminSteamID(m.steamID)
   );
 
   const adminMembers = activeMembers.filter((m) => isAdminSteamID(m.steamID));
-  const unknownMembers = activeMembers.filter((m) => m.member === "Unknown");
+  const unknownMembers = activeMembers.filter(
+    (m) => m.member === stringUnknown
+  );
 
   const sortedActiveMembers = [
     ...adminMembers,
